@@ -50,5 +50,5 @@ module "vault-ent-primary" {
   # Node Count 	
   node_count		= 3
   # User Data script
-  user_supplied_userdata_path = "/Users/csnow/git/tfc/vault-cluster-primary/modules/vault-starter/modules/user_data/templates/install_vault.sh.tpl"
+  user_supplied_userdata_path = "install_vault.sh.tpl"
 }
