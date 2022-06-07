@@ -4,9 +4,17 @@
 
 https://github.com/hashicorp/terraform-gcp-vault-ent-starter
 
+# Initialize clusters
+```
+vault operator init
+```
+
+##check raft status
+```
+vault operator raft list-peers
+```
+
 # vault-cluster-primary
-
-
 
 On primary enable dr
 
