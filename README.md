@@ -4,44 +4,27 @@
 
 https://github.com/hashicorp/terraform-gcp-vault-ent-starter
 
-# Initialize clusters
+# Initialize both clusters
 ```
 vault operator init
 ```
-
 ##check raft status
 ```
+export VAULT_TOKEN=<root token>
 vault operator raft list-peers
 ```
 
 # vault-cluster-primary
 
-On primary enable dr
+#On primary enable dr
+
+## On Primary
 
 ```
 vault write -f sys/replication/dr/primary/enable
 vault write sys/replication/dr/primary/secondary-token id="secondary"
 ```
-
-## Setting up DR requires adding the ca_file to the end of the write command on the secondary
-
-```
-vault write sys/replication/dr/secondary/enable token="<WRAP TOKEN>" ca_file=/opt/vault/tls/vault-ca.pem
-```
-
-## Setting up the primary for DR
-
-```
-vault operator init
-export VAULT_TOKEN=<root token>
-vault operator raft list-peers
-```
-
-```
-vault write -f sys/replication/dr/primary/enable
-vault write sys/replication/dr/primary/secondary-token id="secondary"
-```
-
+## On Primary
 ```
 vault policy write dr-secondary-promotion - <<EOF
 path "sys/replication/dr/secondary/promote" {
@@ -63,17 +46,25 @@ path "sys/storage/raft/autopilot/state" {
 }
 EOF
 ```
-
+## On Primary
 ```
 vault policy list
 
 vault write auth/token/roles/failover-handler     allowed_policies=dr-secondary-promotion     orphan=true     renewable=false     token_type=batch
 
 vault token create -role=failover-handler -ttl=8h
-
-vault write sys/replication/dr/secondary/promote      dr_operation_token="<batch token>"
 ```
 
+## On DR
+```
+vault write sys/replication/dr/secondary/promote      dr_operation_token="<batch token>"
+```
+## On Primary
+```
+vault write -f sys/replication/dr/primary/demote
+```
+
+## Get status of DR replication on primary cluster
 ```
 vault read -format=json sys/replication/dr/status
 
