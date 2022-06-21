@@ -14,9 +14,7 @@ export VAULT_TOKEN=<root token>
 vault operator raft list-peers
 ```
 
-# vault-cluster-primary
-
-# On primary enable dr
+## Enable DR 
 
 ## On Primary
 
@@ -26,6 +24,7 @@ vault write sys/replication/dr/primary/secondary-token id="secondary"
 ```
 
 ## On DR cluster configure replication
+
 ### If you have self signed certs it will require the ca_file at the end
 ```
 vault write sys/replication/dr/secondary/enable token="<WRAP TOKEN>" ca_file=/opt/vault/tls/vault-ca.pem
