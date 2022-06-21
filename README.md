@@ -25,12 +25,13 @@ vault write -f sys/replication/dr/primary/enable
 vault write sys/replication/dr/primary/secondary-token id="secondary"
 ```
 
-# On DR cluster configure replication
+## On DR cluster configure replication
 ### If you have self signed certs it will require the ca_file at the end
 ```
 vault write sys/replication/dr/secondary/enable token="<WRAP TOKEN>" ca_file=/opt/vault/tls/vault-ca.pem
 ```
 
+## Promote DR to primary using batch token
 
 ## On Primary
 ```
