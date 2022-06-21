@@ -8,7 +8,7 @@ https://github.com/hashicorp/terraform-gcp-vault-ent-starter
 ```
 vault operator init
 ```
-##check raft status
+## check raft status
 ```
 export VAULT_TOKEN=<root token>
 vault operator raft list-peers
@@ -16,7 +16,7 @@ vault operator raft list-peers
 
 # vault-cluster-primary
 
-#On primary enable dr
+# On primary enable dr
 
 ## On Primary
 
