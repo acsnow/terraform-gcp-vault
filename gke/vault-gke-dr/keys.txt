@@ -1,0 +1,12 @@
+[0mRecovery Key 1: qyylzDg7c50SMIO67u17bdD8vwqCe5AHn1KlCpOZzhkz[0m
+[0mRecovery Key 2: pxgcvcH4y1ww/54P506lckD/Zzj1d1Jcw6rGW5Azh1LA[0m
+[0mRecovery Key 3: /1Og+81q504a5Ji/2Loo5fFBaTfHTRxu7WO5Z6ow03Pc[0m
+[0mRecovery Key 4: 3egTC92+AKYs+LjjdLrlt0xFebgqZsh9TUrS1ylPGh0b[0m
+[0mRecovery Key 5: OlM1dESYQZy3p+2zjQVx4A0D2UQyNAhQOdI+RpdwznMq[0m
+[0m[0m
+[0mInitial Root Token: hvs.0G28eNCIkMQnKbl7oUZrpfVx[0m
+[0m[0m
+[0mSuccess! Vault is initialized[0m
+[0m[0m
+[0mRecovery key initialized with 5 key shares and a key threshold of 3. Please
+securely distribute the key shares printed above.[0m

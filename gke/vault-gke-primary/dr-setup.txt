@@ -1,0 +1,6 @@
+kubectl exec -ti vault-primary-0 -- vault write -f sys/replication/dr/primary/enable primary_cluster_addr=https://10.10.51.12:8201
+kubectl exec -ti vault-primary-0 -- vault write sys/replication/dr/primary/secondary-token id=secondary
+
+
+# status of dr
+kubectl exec -ti vault-primary-0 -- vault read -format=json sys/replication/dr/status

@@ -1,0 +1,82 @@
+global:
+  enabled: true
+  tlsDisable: false
+
+injector:
+  replicas: 3
+  leaderElector:
+    enabled: true
+
+server:
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/vault/ca.pem
+  extraVolumes:
+    - type: 'secret'
+      name: 'kms-creds'
+    - type: 'secret'
+      name: 'vault'
+  image:
+    repository: hashicorp/vault-enterprise
+    tag: 1.11.0-ent
+  updateStrategyType: RollingUpdate
+  enterpriseLicense:
+    secretName: vault-ent-license
+  extraLabels:
+    app: vault
+  auditStorage:
+    enabled: true
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      setNodeId: true
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 0
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+          tls_cert_file = "/vault/userconfig/vault/vault.pem"
+          tls_key_file  = "/vault/userconfig/vault/vault-key.pem"
+          tls_client_ca_file = "/vault/userconfig/vault/ca.pem"           
+        }
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8202"
+        }
+        seal "gcpckms" {
+          credentials = "/vault/userconfig/kms-creds/credentials.json"
+          project     = "tfc-sip-01"
+          region      = "us-west1"
+          key_ring    = "vault-helm-test"
+          crypto_key  = "vault-helm-test-key"
+        }
+        storage "raft" {
+          path = "/vault/data"
+  
+          retry_join {
+            auto_join = "provider=k8s namespace=\"default\" label_selector=\"app=vault\""
+            leader_tls_servername = "vault-primary"
+            auto_join_scheme = "https"
+            leader_client_cert_file = "/vault/userconfig/vault/vault.pem"
+            leader_client_key_file  = "/vault/userconfig/vault/vault-key.pem"
+            leader_ca_cert_file = "/vault/userconfig/vault/ca.pem"  
+          }
+
+          autopilot {
+            cleanup_dead_servers = "true"
+            last_contact_threshold = "200ms"
+            last_contact_failure_threshold = "10m"
+            max_trailing_logs = 250000
+            min_quorum = 5
+            server_stabilization_time = "10s"
+          }
+        }
+        service_registration "kubernetes" {}
+
+ui:
+  enabled: true
+  serviceType: "LoadBalancer"
+  serviceNodePort: null
+  externalPort: 8200
