@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: vault-active-lb
+  name: primary-vault-active-lb
   annotations: 
     networking.gke.io/load-balancer-type: "Internal"
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     vault-active: "true"
   ports:

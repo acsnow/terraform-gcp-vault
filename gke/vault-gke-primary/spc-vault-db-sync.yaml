@@ -1,0 +1,22 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: vault-database
+spec:
+  provider: vault
+  secretObjects:
+  - data:
+    - key: password
+      objectName: db-password
+    secretName: dbpass
+    type: Opaque
+  parameters:
+    vaultAddress: https://vault-primary.default.svc.cluster.local:8200
+    vaultCACertPath: /mnt/tls/ca.pem
+    vaultTLSClientCertPath: /mnt/tls/vault.pem
+    vaultTLSClientKeyPath: /mnt/tls/vault-key.pem
+    roleName: "database"
+    objects: |
+      - objectName: "db-password"
+        secretPath: "secret/data/db-pass"
+        secretKey: "password"

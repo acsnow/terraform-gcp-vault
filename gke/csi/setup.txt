@@ -1,0 +1,25 @@
+# Add CSI repo
+helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+
+# Install CSI driver
+helm install csi secrets-store-csi-driver/secrets-store-csi-driver --set syncSecret.enabled=true
+
+# install gcp plugin provider
+kubectl apply -f deploy/provider-gcp-plugin.yaml
+
+# Setup service account and secret
+export PROJECT_ID=tfc-sip-01
+gcloud config set project $PROJECT_ID
+gcloud iam service-accounts add-iam-policy-binding     --role roles/iam.workloadIdentityUser     --member "serviceAccount:$PROJECT_ID.svc.id.goog[default/mypodserviceaccount]"     gke-workload@$PROJECT_ID.iam.gserviceaccount.com
+
+#  Create Secret and give permission to service account
+echo "foo" > secret.data
+gcloud secrets create testsecret --replication-policy=automatic --data-file=secret.data
+gcloud secrets add-iam-policy-binding testsecret     --member=serviceAccount:gke-workload@$PROJECT_ID.iam.gserviceaccount.com     --role=roles/secretmanager.secretAccessor
+
+
+# Install test pod that mounts secret using csi repo
+git clone git@github.com:GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp.git
+cd secrets-store-csi-driver-provider-gcp
+./scripts/example.sh
+

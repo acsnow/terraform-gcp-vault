@@ -1,3 +1,15 @@
-gcloud container clusters create primary-vault-01 --project=tfc-sip-01 --num-nodes=3 --node-locations=us-west1-a --machine-type=n2-standard-4 --network=primary-vault-vpc --subnetwork=primary-gke-subnet-01 --region=us-west1 
-gcloud container clusters create dr-vault-01 --project=tfc-sip-01 --num-nodes=3 --node-locations=us-west1-a --machine-type=n2-standard-4 --network=primary-vault-vpc --subnetwork=primary-gke-subnet-01 --region=us-west1 
+
+## Build a GKE cluster to use with a vault cluster
+
+gcloud container clusters create primary-vault-01 --project=tfc-sip-01 --num-nodes=3 --node-locations=us-west1-a --machine-type=n2-standard-4 --network=primary-vault-vpc --subnetwork=primary-gke-subnet-01 --region=us-west1 --scopes=storage-rw
+gcloud container clusters create dr-vault-01 --project=tfc-sip-01 --num-nodes=3 --node-locations=us-west1-a --machine-type=n2-standard-4 --network=primary-vault-vpc --subnetwork=primary-gke-subnet-01 --region=us-west1 --scopes=storage-rw
+
+## for using GCP secrets manager with the CSI driver you have to add the workload-pool to enable workload management
+
+gcloud container clusters create primary-vault-01 --project=tfc-sip-01 --num-nodes=3 --node-locations=us-west1-a --machine-type=n2-standard-4 --network=primary-vault-vpc --subnetwork=primary-gke-subnet-01 --region=us-west1 --scopes=storage-rw --workload-pool=tfc-sip-01.svc.id.goog
+gcloud container clusters create dr-vault-01 --project=tfc-sip-01 --num-nodes=3 --node-locations=us-west1-a --machine-type=n2-standard-4 --network=primary-vault-vpc --subnetwork=primary-gke-subnet-01 --region=us-west1 --scopes=storage-rw --workload-pool=tfc-sip-01.svc.id.goog
+
+
+## NGINX testing
+gcloud container clusters create yusen-nginx-01 --project=tfc-sip-01 --num-nodes=3 --node-locations=us-west1-a --machine-type=n2-standard-4 --network=primary-vault-vpc --subnetwork=primary-gke-subnet-01 --region=us-west1 --scopes=storage-rw --enable-ip-alias
 

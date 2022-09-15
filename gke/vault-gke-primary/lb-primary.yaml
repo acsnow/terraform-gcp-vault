@@ -1,14 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: vault-load-balancer
+  name: primary-vault-lb
   annotations: 
     networking.gke.io/load-balancer-type: "Internal"
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app: vault
   ports:
+    - name: https
+      port: 443
+      targetPort: 8200
     - name: http
       port: 8200
     - name: server
