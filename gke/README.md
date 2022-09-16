@@ -225,6 +225,28 @@ This site had information on how to promote the secondary to primary and back.
 
 On Primary create batch token
 
+Create Policy for batch token
+```
+vault policy write dr-secondary-promotion - <<EOF
+path "sys/replication/dr/secondary/promote" {
+  capabilities = [ "update" ]
+}
+
+# To update the primary to connect
+path "sys/replication/dr/secondary/update-primary" {
+    capabilities = [ "update" ]
+}
+
+# Only if using integrated storage (raft) as the storage backend
+# To read the current autopilot status
+path "sys/storage/raft/autopilot/state" {
+    capabilities = [ "update" , "read" ]
+}
+EOF
+``` 
+
+Create Batch token for failover
+
 ```
 vault write auth/token/roles/failover-handler     allowed_policies=dr-secondary-promotion     orphan=true     renewable=false     token_type=batch
 vault token create -role=failover-handler -ttl=8h | tee batch.txt
