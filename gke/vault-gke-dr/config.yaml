@@ -8,7 +8,7 @@ injector:
     enabled: true
   agentImage:
     repository: hashicorp/vault-enterprise
-    tag: 1.11.0-ent
+    tag: 1.11.3-ent
 
 csi:
   enabled: true
@@ -31,22 +31,7 @@ server:
       name: 'vault'
   image:
     repository: hashicorp/vault-enterprise
-    tag: 1.11.0-ent
-#  ingress:
-#    enabled: true
-#    ingressClassName: "nginx"
-#    annotations:
-#      #kubernetes.io/ingress.class: nginx
-#      # kubernetes.io/tls-acme: "true"
-#      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-#      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-#      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-#    hosts:
-#      - host: 35.233.249.68.nip.io
-#        paths: []
-#        - backend:
-#            serviceName: vault-secondary-active
-#            servicePort: 8200
+    tag: 1.11.3-ent
   updateStrategyType: RollingUpdate
   enterpriseLicense:
     secretName: vault-ent-license
@@ -55,6 +40,16 @@ server:
   dataStorage: 
     enabled: true
     size: 50Gi
+  readinessProbe:
+    enabled: true
+  livelinessProbe:
+    enabled: true
+    path: /v1/sys/health?standbyok=true
+    initialDelaySeconds: 60
+    failureThreshold: 2
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 3
   auditStorage:
     enabled: true
   ha:
